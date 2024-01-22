@@ -38,7 +38,7 @@ This project simulates a Basic HRMS (Human Resource Management System) with func
 
 1. **Clone the Repository:**
    ```bash
-   git clone 
+   git clone https://github.com/udayakumar21/HRMS.git
    cd code
 
 2. python app.py
