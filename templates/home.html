@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Human Resource Management System</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Welcome to HRMS</h2>
+        <h3>Add Employee</h3>
+    </main>
+   
+    <form action="{{ url_for('api_employees') }}" method="post" id="addEmployeeForm">
+        <label for="name">Name:</label>
+        <input type="text" name="name" required>
+        <label for="designation">Designation:</label>
+        <input type="text" name="designation">
+        <label for="department">Department:</label>
+        <input type="text" name="department">
+        <label for="date_of_joining">Date of Joining:</label>
+        <input type="date" name="date_of_joining">
+        <label for="address">Address:</label>
+        <input type="text" name="address">
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
+        <form action="#" method="post" id="addEmployeeForm">
+            <button type="button" onclick="addEmployee()">Add Employee</button>
+        </form>
+    </form>
+    <main>
+        <h2>Welcome to HRMS</h2>
+        <h3>Employee List</h3>
+<ul>
+    {% for employee in employees.values() %}
+    <li>
+        {{ employee.name }} <br> {{ employee.designation }}<br>{{employee.department}} <br>{{employee.date_of_joining}}<br> {{employee.date}}<br>{{employee.address}} <br>
+        {{employee.email}}
+        <button type="button" onclick="markAttendance('{{ employee.id }}')">Mark Attendance</button>
+    </li>
+    {% endfor %}
+</ul>
+    </main>
+</main>
+<main>
+    <h2>Employee Report</h2>
+    <ul>
+        {% for department, count in department_count.items() %}
+            <li>{{ department }}: {{ count }} employees</li>
+        {% endfor %}
+    </ul>
+</main>
+    <footer>
+        <p>&copy; 2024 HRMS</p>
+    </footer>
+
+    <script>
+        function addEmployee() {
+            var formData = {
+                name: document.getElementsByName("name")[0].value,
+                designation: document.getElementsByName("designation")[0].value,
+                department: document.getElementsByName("department")[0].value,
+                date_of_joining: document.getElementsByName("date_of_joining")[0].value,
+                address: document.getElementsByName("address")[0].value,
+                email: document.getElementsByName("email")[0].value
+            };
+
+            // Send the data as JSON using fetch
+            fetch("{{ url_for('api_employees') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); 
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <script>
+        function markAttendance(employeeId) {
+            var inTime = prompt('Enter In Time (HH:MM):');
+            var outTime = prompt('Enter Out Time (HH:MM):');
+    
+            if (inTime && outTime) {
+                var attendanceData = {
+                    employee_id: employeeId,
+                    in_time: inTime,
+                    out_time: outTime
+                };
+    
+                // Send the data as JSON using fetch
+                fetch("{{ url_for('mark_attendance') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(attendanceData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // Show a message
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+
+</html>
